@@ -33,7 +33,7 @@ class Popular extends Component {
 
     this.state = {
       selectedLanguage: 'All',
-      repos: null,
+      repos: {},
       error: null
     };
   }
@@ -41,28 +41,33 @@ class Popular extends Component {
   updateLanguage = selectedLanguage => {
     this.setState({
       selectedLanguage,
-      error: null,
-      repos: null
+      error: null
     });
 
-    fetchPopularRepos(selectedLanguage)
-      .then(repos =>
-        this.setState({
-          repos,
-          error: null
+    if (!this.state.repos[selectedLanguage]) {
+      fetchPopularRepos(selectedLanguage)
+        .then(data => {
+          this.setState(({ repos }) => ({
+            repos: {
+              ...repos,
+              [selectedLanguage]: data
+            }
+          }));
         })
-      )
-      .catch(() => {
-        // console.warn('Error fetching repos: ', error);
+        .catch(() => {
+          // console.warn('Error fetching repos: ', error);
 
-        this.setState({
-          error: `There was an error fetching the repositories.`
+          this.setState({
+            error: `There was an error fetching the repositories.`
+          });
         });
-      });
+    }
   };
 
   isLoading = () => {
-    return this.state.repos === null && this.state.error === null;
+    const { selectedLanguage, repos, error } = this.state;
+
+    return !repos[selectedLanguage] && error === null;
   };
 
   render() {
@@ -78,7 +83,9 @@ class Popular extends Component {
 
         {error && <p>{error}</p>}
 
-        {repos && <pre>{JSON.stringify(repos, null, 2)}</pre>}
+        {repos[selectedLanguage] && (
+          <pre>{JSON.stringify(repos[selectedLanguage], null, 2)}</pre>
+        )}
       </Fragment>
     );
   }

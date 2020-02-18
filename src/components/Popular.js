@@ -7,7 +7,6 @@ import {
   FaCodeBranch,
   FaExclamationTriangle
 } from 'react-icons/fa';
-import Loader from './Loader';
 
 function LanguagesNav({ selected, onUpdateLanguage }) {
   const languages = ['All', 'JavaScript', 'Ruby', 'CSS', 'Java', 'Python'];
@@ -142,7 +141,7 @@ class Popular extends Component {
           onUpdateLanguage={this.updateLanguage}
         />
 
-        {this.isLoading() && <Loader />}
+        {this.isLoading() && 'Loading...'}
 
         {error && <p>{error}</p>}
 

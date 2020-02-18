@@ -35,20 +35,19 @@ class PlayerInput extends React.Component {
     this.state = {
       username: ''
     };
-
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handleChange = this.handleChange.bind(this);
   }
-  handleSubmit(event) {
+
+  handleSubmit = event => {
     event.preventDefault();
 
     this.props.onSubmit(this.state.username);
-  }
-  handleChange(event) {
+  };
+  handleChange = event => {
     this.setState({
       username: event.target.value
     });
-  }
+  };
+
   render() {
     return (
       <form className='column player' onSubmit={this.handleSubmit}>
@@ -84,14 +83,45 @@ PlayerInput.propTypes = {
 };
 
 class Battle extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      playerOne: null,
+      playerTwo: null
+    };
+  }
+
+  handleSubmit = (id, player) => {
+    this.setState({
+      [id]: player
+    });
+  };
+
   render() {
+    const { playerOne, playerTwo } = this.state;
+
     return (
       <Fragment>
         <Instructions />
-        <PlayerInput
-          label='Label!'
-          onSubmit={value => console.log('value!', value)}
-        />
+        <div className='players-container'>
+          <h1 className='center-text-header-lg'>Players</h1>
+          <div className='row space-around'>
+            {playerOne === null && (
+              <PlayerInput
+                label='Player One'
+                onSubmit={player => this.handleSubmit('playerOne', player)}
+              />
+            )}
+
+            {playerTwo === null && (
+              <PlayerInput
+                label='Player Two'
+                onSubmit={player => this.handleSubmit('playerTwo', player)}
+              />
+            )}
+          </div>
+        </div>
       </Fragment>
     );
   }
